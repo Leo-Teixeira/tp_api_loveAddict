@@ -1,27 +1,107 @@
 import express from "express";
 import { graphqlHTTP } from "express-graphql";
 import { buildSchema } from "graphql";
+import mariadb from "mariadb";
 
-/* `var schema = buildSchema(`
-  type Query {
-    hello: String
+const pool = mariadb.createPool({
+  host: "localhost",
+  user: "root",
+  password: "rootpwd",
+  database: "liveAddict",
+  port: 4000,
+});
+
+const schema = buildSchema(`
+  type Visiteur {
+    idVisiteur: Int!
+    nom: String
+    prenom: String
+    email: String
+    age: Int
+    adresse: String
+    idParrain: Int
+    idVille: Int
   }
-`);` is defining the schema for the GraphQL API. It is using the `buildSchema` function from the
-`graphql` library to create a GraphQL schema object. The schema defines the available types and
-fields for the API, in this case, it defines a `Query` type with a single field `hello` that returns
-a string. */
-var schema = buildSchema(`
+
+  type Ville {
+    idVille: Int!
+    nom: String
+    coordonnees: String
+  }
+
+  type Style {
+    idStyle: Int!
+    libelle: String
+    description: String
+  }
+
+  type Realise {
+    IdArtiste: Int!
+    idConcert: Int!
+  }
+
+  type Participe {
+    idConcert: Int!
+    idVisiteur: Int!
+  }
+
+  type Joue {
+    idConcert: Int!
+    idStyle: Int!
+  }
+
+  type Concert {
+    idConcert: Int!
+    dateConcert: String
+    nbrPlaceDisponible: Int
+    idVille: Int!
+  }
+
+  type Artiste {
+    IdArtiste: Int!
+    pseudo: String
+    idStyle: Int
+  }
+
   type Query {
-    hello: String
+    getArtistes: [Artiste], 
+    getConcerts: [Concert]
   }
 `);
 
-/* `var root` is an object that provides a resolver function for the `hello` API endpoint. The resolver
-function returns the string "Hello world!" when the `hello` query is executed. */
-var root = {
-  hello: () => {
-    return "Hello world!";
+const root = {
+  getArtistes: async () => {
+    let conn;
+    try {
+      conn = await pool.getConnection();
+      const result = await conn.query("SELECT * FROM Artiste");
+      console.log(result);
+      return result;
+    } catch (err) {
+      throw err;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
   },
+
+  getConcerts: async () => {
+    let conn;
+    try {
+      conn = await pool.getConnection();
+      const result = await conn.query("SELECT * FROM Concert");
+      return result;
+    } catch (err) {
+      throw err;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
+  },
+
+  
 };
 
 /* This code is setting up a GraphQL API server using the Express framework in JavaScript. */
