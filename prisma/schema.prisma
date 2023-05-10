@@ -9,3 +9,54 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Visiteur {
+  idVisiteur Int @id
+  nom String?
+  prenom String?
+  email String?
+  age Int?
+  adresse String?
+  idParrain Int?
+  idVille Int?
+}
+
+model Ville {
+  idVille Int @id
+  nom String?
+  coordonnees String?
+}
+
+model Style {
+  idStyle Int @id
+  libelle String?
+  description String?
+}
+
+model Realise {
+  IdArtiste Int @id
+  idConcert Int
+}
+
+model Participe {
+  idConcert Int @id
+  idVisteur Int
+}
+
+model Joue {
+  idConcert Int @id
+  idStyle Int
+}
+
+model Concert {
+  idConcert Int @id
+  dateConcert DateTime?
+  nbrPlaceDisponible Int?
+  idVille Int
+}
+
+model Artiste {
+  IdArtiste Int @id
+  pseudo String?
+  idStyle Int?
+}
