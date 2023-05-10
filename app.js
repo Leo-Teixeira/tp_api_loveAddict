@@ -67,6 +67,8 @@ const schema = buildSchema(`
     getArtistes: [Artiste], 
     getConcerts: [Concert],
     getStyles: [Style],
+    getVilles: [Ville],
+    getVisiteurs: [Visiteur],
   }
 `);
 
@@ -107,6 +109,36 @@ const root = {
     try {
       conn = await pool.getConnection();
       const result = await conn.query("SELECT * FROM Style");
+      return result;
+    } catch (err) {
+      throw err;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
+  },
+
+  getVilles: async () => {
+    let conn;
+    try {
+      conn = await pool.getConnection();
+      const result = await conn.query("SELECT * FROM Ville");
+      return result;
+    } catch (err) {
+      throw err;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
+  },
+
+  getVisiteurs: async () => {
+    let conn;
+    try {
+      conn = await pool.getConnection();
+      const result = await conn.query("SELECT * FROM Visiteur");
       return result;
     } catch (err) {
       throw err;
