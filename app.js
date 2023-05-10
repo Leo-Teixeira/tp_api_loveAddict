@@ -65,7 +65,8 @@ const schema = buildSchema(`
 
   type Query {
     getArtistes: [Artiste], 
-    getConcerts: [Concert]
+    getConcerts: [Concert],
+    getStyles: [Style],
   }
 `);
 
@@ -101,7 +102,20 @@ const root = {
     }
   },
 
-  
+  getStyles: async () => {
+    let conn;
+    try {
+      conn = await pool.getConnection();
+      const result = await conn.query("SELECT * FROM Style");
+      return result;
+    } catch (err) {
+      throw err;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
+  },
 };
 
 /* This code is setting up a GraphQL API server using the Express framework in JavaScript. */
