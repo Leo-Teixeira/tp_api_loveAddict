@@ -11,6 +11,7 @@ const schema = buildSchema(`
     adresse: String
     idParrain: Int
     idVille: Int
+    ville Ville?   @relation(fields: [idVille], references: [idVille])
   }
 
   type Query {
@@ -21,6 +22,7 @@ const schema = buildSchema(`
     idVille: Int!
     nom: String
     coordonnees: String
+    visiteurs Visiteur[]
   }
 
   type Query {
